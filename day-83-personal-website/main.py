@@ -25,10 +25,13 @@ def professional():
     current_year = datetime.now().year
     return render_template("professional.html", current_year=current_year)
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
     current_year = datetime.now().year
-    return render_template("contact.html", current_year=current_year)
+    if request.method == "GET":
+        return render_template("contact.html", current_year=current_year)
+    else:
+        return render_template("contact.html", msg_sent=True)
 
 if __name__ == "__main__":
     app.run(debug=True)
