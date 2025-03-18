@@ -10766,6 +10766,9 @@ header.masthead .post-heading .meta a {
   text-align: center;
 }
 
+.iconify {
+    margin-right: 15px;
+}
 /* .post-preview > a {
   color: #212529;
 }
