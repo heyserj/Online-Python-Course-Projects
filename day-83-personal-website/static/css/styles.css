@@ -10769,6 +10769,13 @@ header.masthead .post-heading .meta a {
 .iconify {
     margin-right: 15px;
 }
+
+#carouselExampleIndicators .carousel-inner .carousel-item img {
+    width: 100%; /* Ensure it takes full width of the container */
+    max-height: 500px; /* Set a max height to make the images smaller */
+    object-fit: cover; /* This will crop the image to fit the container without stretching it */
+}
+
 /* .post-preview > a {
   color: #212529;
 }
