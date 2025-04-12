@@ -10776,6 +10776,11 @@ header.masthead .post-heading .meta a {
     object-fit: cover; /* This will crop the image to fit the container without stretching it */
 }
 
+#academics-img {
+  max-height: 600px;
+  object-fit: cover;
+}
+
 /* .post-preview > a {
   color: #212529;
 }
