@@ -10776,7 +10776,8 @@ header.masthead .post-heading .meta a {
     object-fit: cover; /* This will crop the image to fit the container without stretching it */
 }
 
-#academics-img {
+.portfolio-img {
+  width: 100%;
   max-height: 600px;
   object-fit: cover;
 }
