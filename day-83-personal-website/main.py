@@ -1,37 +1,29 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from datetime import datetime
 
 app = Flask(__name__)
 Bootstrap5(app)
 
+@app.context_processor
+def inject_current_year():
+    return {"current_year": datetime.now().year}
+
 @app.route("/")
 def home():
-    current_year = datetime.now().year
-    return render_template("index.html", current_year=current_year)
+    return render_template("index.html")
 
 @app.route("/athletics")
 def athletics():
-    current_year = datetime.now().year
-    return render_template("athletics.html", current_year=current_year)
+    return render_template("athletics.html")
 
 @app.route("/academics")
 def academics():
-    current_year = datetime.now().year
-    return render_template("academics.html", current_year=current_year)
+    return render_template("academics.html")
 
 @app.route("/professional")
 def professional():
-    current_year = datetime.now().year
-    return render_template("professional.html", current_year=current_year)
-
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    current_year = datetime.now().year
-    if request.method == "GET":
-        return render_template("contact.html", current_year=current_year)
-    else:
-        return render_template("contact.html", msg_sent=True)
+    return render_template("professional.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
