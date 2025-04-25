@@ -1,30 +1,32 @@
-def is_board_full(row1, row2, row3):
-    row1_occupied_chars = [val for val in row1 if val != " "]
-    row2_occupied_chars = [val for val in row2 if val != " "]
-    row3_occupied_chars = [val for val in row3 if val != " "]
-    return len(row1_occupied_chars) == len(row2_occupied_chars) == len(row3_occupied_chars) == 3
+def is_board_full(rows):
+    for row in rows:
+        for value in row:
+            if value == " ":
+                return False
+    return True
 
-def is_winner(row1, row2, row3):
-    # check to see if anyone won vertically
-    if row1[0] == row2[0] == row3[0] != " " or row1[1] == row2[1] == row3[1] != " " or row1[2] == row2[2] == row3[2] != " ":
-        return True
-
-    # check to see if anyone won horizontally
-    if row1[0] == row1[1] == row1[2] != " " or row1[0] == row1[1] == row1[2] != " " or row2[0] == row2[1] == row2[2] != " ":
-        return True
-
+def is_winner(rows):
+    for num in range(3):
+        # check to see if anyone won vertically
+        if rows[0][num] == rows[1][num] == rows[2][num] != " ":
+            return True
+        
+        # check to see if anyone won horizontally
+        if rows[num][0] == rows[num][1] == rows[num][2] != " ":
+            return True
+        
     # check to see if anyone won diagonally
-    if row1[0] == row2[1] == row3[2] != " " or row1[2] == row2[1] == row3[0] != " ":
+    if rows[0][0] == rows[1][1] == rows[2][2] != " " or rows[0][2] == rows[1][1] == rows[2][0] != " ":
         return True
     
     return False
 
-def display_game_board(row1, row2, row3):
-    print(" | ".join(row1))
-    print("---------")
-    print(" | ".join(row2))
-    print("---------")
-    print(f"{" | ".join(row3)}\n")
+def display_game_board(rows):
+    for num in range(2):
+        print(" | ".join(rows[num]))
+        print("---------")
+    print(f"{' | '.join(rows[2])}\n")
+
 
 def get_user_move(row_or_column):
     while True:
@@ -35,15 +37,18 @@ def get_user_move(row_or_column):
             exit(0)
 
         try:
-            num = int(num) - 1
+            num = int(num)
         except ValueError:
             print(f"You entered an invalid {row_or_column} number! Please try again.")
             continue
        
-        if 0 <= num <= 2:
+        if 1 <= num <= 3:
             return num
         else:
             print(f"You entered an invalid {row_or_column} number! Please try again.")
+
+def is_spot_already_taken(rows, row_input, col_input):
+    return rows[row_input - 1][col_input - 1] != " "
 
 def get_user_input_for_continuing():
     response = input("Would you like to play again? Type 'Y' or 'N'. ").upper()
@@ -54,41 +59,44 @@ def get_user_input_for_continuing():
     print("You entered an invalid response! Please try again.")
     get_user_input_for_continuing()
 
-print("Welcome to Tic-Tac-Toe! Player 1 will be 'X' on the board, while player 2 will be 'O'.")
-print("You may enter the letter 'Q' at any time to exit the game.")
-
-while True:
-    row1, row2, row3 = [[" ", " ", " "] for _ in range(3)]
-    player_num = 1
+def play_game():
+    print("Welcome to Tic-Tac-Toe! Player 1 will be 'X' on the board, while player 2 will be 'O'.")
+    print("You may enter the letter 'Q' at any time to exit the game.")
 
     while True:
+        rows = [[" ", " ", " "] for _ in range(3)]
+        player_num = 1
 
-        # display the game board
-        print("\nThe game board currently looks like the following:\n")
-        display_game_board(row1, row2, row3)
+        while True:
 
-        if is_winner(row1, row2, row3):
-            print(f"Congratulations, player {3 - player_num}! You won!")
+            # display the game board
+            print("\nThe game board currently looks like the following:\n")
+            display_game_board(rows)
+
+            if is_winner(rows):
+                print(f"Congratulations, player {3 - player_num}! You won!")
+                break
+
+            if is_board_full(rows):
+                print(f"It's a tie! The board is full.")
+                break
+
+            # ask one player to make a move. Ask for a row and column number.
+            print(f"Player {player_num}, enter your next move!")
+            row_num = get_user_move("row")
+            col_num = get_user_move("column")
+
+            if is_spot_already_taken(rows, row_num, col_num):
+                print("The spot you entered is already taken! Please try again.")
+                continue
+
+            rows[row_num - 1][col_num - 1] = "X" if player_num == 1 else "O"
+            player_num = 3 - player_num
+
+        if get_user_input_for_continuing() == "N":
+            print("Thanks for playing! I hope you will play again soon.")
             break
 
-        if is_board_full(row1, row2, row3):
-            print(f"It's a tie! The board is full.")
-            break
 
-        # ask one player to make a move. Ask for a row and column number.
-        print(f"Player {player_num}, enter your next move!")
-        row_num_index = get_user_move("row")
-        col_num_index = get_user_move("column")
-
-        is_spot_already_taken = eval(f"row{row_num_index + 1}[{col_num_index}] != ' '")
-        if is_spot_already_taken:
-            print("The spot you entered is already taken! Please try again.")
-            continue
-
-        exec(f"row{row_num_index + 1}[{col_num_index}] = '{"X" if player_num == 1 else "O"}'")
-
-        player_num = 3 - player_num
-
-    if get_user_input_for_continuing() == "N":
-        print("Thanks for playing! I hope you will play again soon.")
-        break
+if __name__ == "__main__":
+    play_game()
