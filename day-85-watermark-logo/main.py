@@ -1,5 +1,5 @@
-from tkinter import Tk, filedialog, Button, Label, Canvas
-from PIL import Image, ImageTk
+from tkinter import Tk, filedialog, Button, Label, Canvas, messagebox
+from PIL import Image, ImageTk, ImageDraw
 import tkinter
 
 FONT_NAME = "Arial"
@@ -57,8 +57,26 @@ IMAGE_PREVIEW_FONT_SIZE = 14
 #         # Update canvas image
 #         self.canvas.itemconfig(self.image_id, image=self.tk_image)
 
+def display_confirmation_dialog_box():
+    answer = messagebox.askyesno("Do you wish to continue?", "Your changes will not be saved.")
+    if answer:
+        display_home_screen()
+    else:
+        pass
 
-def upload_main_image():
+def add_text():
+    pass
+
+def add_logo():
+    pass
+
+def remove_watermark():
+    pass
+
+def save_image():
+    pass
+
+def display_image_editor_screen():
     file_path = filedialog.askopenfilename(
         title="Select an image",
         filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif")]
@@ -85,19 +103,36 @@ def upload_main_image():
         canvas.tk_img = tk_img
         canvas.create_image(canvas_width // 2, canvas_height // 2, image=tk_img, anchor="center")
 
-        back_btn = Button(text="Re-Upload Image", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=upload_main_image, bg="light blue")
+        back_btn = Button(text="Go Back", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=display_confirmation_dialog_box, bg="salmon", fg="white")
         back_btn.place(relx=0.25, rely=0.85, anchor=tkinter.CENTER)
-    
+
+        add_text_btn = Button(text="Add Text", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=add_text, bg="light blue")
+        add_text_btn.place(relx=0.375, rely=0.85, anchor=tkinter.CENTER)
+
+        add_logo_btn = Button(text="Add Logo", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=add_logo, bg="light blue")
+        add_logo_btn.place(relx=0.5, rely=0.85, anchor=tkinter.CENTER)
+
+        remove_watermark_btn = Button(text="Remove Watermark", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=remove_watermark, bg="light blue")
+        remove_watermark_btn.place(relx=0.625, rely=0.85, anchor=tkinter.CENTER)
+
+        save_btn = Button(text="Save Image", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=save_image, bg="dark green", fg="white")
+        save_btn.place(relx=0.75, rely=0.85, anchor=tkinter.CENTER)
+
+def display_home_screen():
+    for widget in window.winfo_children():
+            widget.destroy()
+
+    greeting_label = Label(text="Welcome! Please upload an image to get started.", font=(FONT_NAME, GREETING_FONT_SIZE, "normal"))
+    greeting_label.place(relx=0.5, rely=0.25, anchor=tkinter.CENTER)
+
+    upload_btn = Button(text="Upload Image", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), bg="light blue", command=display_image_editor_screen)
+    upload_btn.place(relx=0.5, rely=0.75, anchor=tkinter.CENTER)
+
 
 window = Tk()
 window.title("Watermark Logo Application")
 window.minsize(width=window.winfo_screenwidth(), height=window.winfo_screenheight())
 window.config(padx=20, pady=20)
-
-greeting_label = Label(text="Welcome! Please upload an image to get started.", font=(FONT_NAME, GREETING_FONT_SIZE, "normal"))
-greeting_label.place(relx=0.5, rely=0.25, anchor=tkinter.CENTER)
-
-upload_btn = Button(text="Upload Image", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), bg="light blue", command=upload_main_image)
-upload_btn.place(relx=0.5, rely=0.75, anchor=tkinter.CENTER)
+display_home_screen()
 
 window.mainloop()
