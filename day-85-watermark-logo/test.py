@@ -1,61 +1,37 @@
-from tkinter import Tk, filedialog, Button, Label, Canvas, messagebox, colorchooser, font
-from PIL import Image, ImageTk, ImageDraw
 import tkinter as tk
-
-FONT_NAME = "Arial"
-GREETING_FONT_SIZE = 16
-BUTTON_FONT_SIZE = 12
+from tkinter import filedialog, colorchooser, font
+from PIL import Image, ImageTk, ImageDraw
 
 class ImageEditorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Text & Logo Editor")
-        
+        self.canvas = tk.Canvas(root, bg="white")
+        self.canvas.pack(fill="both", expand=True)
+
         self.text_items = []   # Stores (text, x, y, font, color)
         self.image_overlays = []  # Stores (image, x, y)
-        
+
         self.font_family = tk.StringVar(value="Arial")
         self.font_size = tk.IntVar(value=24)
         self.font_color = "#000000"
 
-        # Frame for the canvas
-        self.canvas_frame = tk.Frame(root)
-        self.canvas_frame.pack(fill="both", expand=True, padx=10, pady=10)
-        
-        self.canvas = tk.Canvas(self.canvas_frame, bg="white")
-        self.canvas.pack(side="top", fill="both", expand=True)
-
-        # Set up controls and load base image
-        self.setup_controls()
         self.load_base_image()
 
-    def load_base_image(self):
-        # Ask user to select an image
-        path = filedialog.askopenfilename(
-            title="Select an image",
-            filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif")]
-        )
+        self.setup_controls()
 
+    def load_base_image(self):
+        path = filedialog.askopenfilename(title="Select base image")
         if not path:
             return
-        
         self.base_image = Image.open(path)
-        
-        # Resize the image to fit the canvas
-        max_width = self.root.winfo_screenwidth() * 0.6
-        max_height = self.root.winfo_screenheight() * 0.6
-        self.base_image.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
-        
         self.tk_base_image = ImageTk.PhotoImage(self.base_image)
-        
-        # Adjust canvas size to the resized image
         self.canvas.config(width=self.tk_base_image.width(), height=self.tk_base_image.height())
         self.canvas.create_image(0, 0, image=self.tk_base_image, anchor="nw")
 
     def setup_controls(self):
-        # Frame for buttons (separate from the canvas)
         control_frame = tk.Frame(self.root)
-        control_frame.pack(fill="x", pady=10)
+        control_frame.pack(fill="x", pady=5)
 
         tk.Label(control_frame, text="Font:").pack(side="left")
         font_menu = tk.OptionMenu(control_frame, self.font_family, *font.families())
@@ -147,83 +123,8 @@ class ImageEditorApp:
             output.save(save_path)
             print(f"Saved to {save_path}")
 
-def display_confirmation_dialog_box():
-    answer = messagebox.askyesno("Do you wish to continue?", "Your changes will not be saved.")
-    if answer:
-        display_home_screen()
-    else:
-        pass
-
-# def add_text():
-#     pass
-
-# def add_logo():
-#     pass
-
-# def remove_watermark():
-#     pass
-
-# def save_image():
-#     pass
-
-def display_image_editor_screen():
-    editor = ImageEditorApp(window)
-    # file_path = filedialog.askopenfilename(
-    #     title="Select an image",
-    #     filetypes=[("Image files", "*.jpg *.jpeg *.png *.bmp *.gif")]
-    # )
-
-    # if file_path:
-    #     for widget in window.winfo_children():
-    #         widget.destroy()
-
-    #     header_label = Label(text="Image Preview:", font=(FONT_NAME, IMAGE_PREVIEW_FONT_SIZE, "normal"))
-    #     header_label.place(relx=0.5, rely=0.05, anchor=tkinter.CENTER)
-
-    #     canvas = Canvas(window, width=window.winfo_screenwidth() * 0.6, height=window.winfo_screenheight() * 0.6)
-    #     canvas.place(relx=0.5, rely=0.44, anchor=tkinter.CENTER)                 
-    #     canvas.update_idletasks()
-
-    #     canvas_width = canvas.winfo_width()
-    #     canvas_height = canvas.winfo_height()
-
-    #     img = Image.open(file_path)
-    #     img = img.resize((canvas_width, canvas_height))
-    #     tk_img = ImageTk.PhotoImage(img)
-
-    #     canvas.tk_img = tk_img
-    #     canvas.create_image(canvas_width // 2, canvas_height // 2, image=tk_img, anchor="center")
-
-    #     back_btn = Button(text="Go Back", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=display_confirmation_dialog_box, bg="salmon", fg="white")
-    #     back_btn.place(relx=0.25, rely=0.85, anchor=tkinter.CENTER)
-
-    #     add_text_btn = Button(text="Add Text", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=add_text, bg="light blue")
-    #     add_text_btn.place(relx=0.375, rely=0.85, anchor=tkinter.CENTER)
-
-    #     add_logo_btn = Button(text="Add Logo", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=add_logo, bg="light blue")
-    #     add_logo_btn.place(relx=0.5, rely=0.85, anchor=tkinter.CENTER)
-
-    #     remove_watermark_btn = Button(text="Remove Watermark", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=remove_watermark, bg="light blue")
-    #     remove_watermark_btn.place(relx=0.625, rely=0.85, anchor=tkinter.CENTER)
-
-    #     save_btn = Button(text="Save Image", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), command=save_image, bg="dark green", fg="white")
-    #     save_btn.place(relx=0.75, rely=0.85, anchor=tkinter.CENTER)
-
-def display_home_screen():
-    for widget in window.winfo_children():
-            widget.destroy()
-
-    greeting_label = Label(text="Welcome! Please upload an image to get started.", font=(FONT_NAME, GREETING_FONT_SIZE, "normal"))
-    greeting_label.place(relx=0.5, rely=0.25, anchor=tk.CENTER)
-
-    upload_btn = Button(text="Upload Image", font=(FONT_NAME, BUTTON_FONT_SIZE, "normal"), bg="light blue", command=display_image_editor_screen)
-    upload_btn.place(relx=0.5, rely=0.75, anchor=tk.CENTER)
-
-
-window = Tk()
-window.title("Watermark Logo Application")
-window.minsize(width=window.winfo_screenwidth(), height=window.winfo_screenheight())
-window.config(padx=20, pady=20)
-display_home_screen()
-
-window.mainloop()
+# Run the editor
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ImageEditorApp(root)
+    root.mainloop()
